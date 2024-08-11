@@ -11,8 +11,6 @@ import { Construct } from "constructs";
 export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
-    super(scope, id, props);
     
     // params
     const soracomAccountId = '762707677580'; // Japan coverage
