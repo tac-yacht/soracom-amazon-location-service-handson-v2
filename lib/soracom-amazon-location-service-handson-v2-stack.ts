@@ -7,6 +7,7 @@ import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
+const path = require('node:path'); 
 
 export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -82,13 +83,13 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
      * AWS Lambda
      */
     // Put Device Postion From SORACOM GPS Multi Unit For SORACOM Beam
-    const batchUpdateDevicePositionFromGpsMultiUnitBeam = new NodejsFunction(
+    const batchUpdateDevicePositionFromGpsMultiUnitBeam = new lambda.Function(
       this,
       "BatchUpdateDevicePositionFromGpsMultiUnitBeam",
       {
         runtime: lambda.Runtime.NODEJS_LATEST,
-        entry: "lambda/updateDevicePositionBeamHandler.js",
         handler: "gpsMultiUnitHandler",
+        code: lambda.Code.fromAsset(path.join(__dirname, '/lambda/updateDevicePositionBeamHandler')),
         timeout: cdk.Duration.seconds(30),
         tracing: lambda.Tracing.ACTIVE,
         description:
@@ -147,10 +148,10 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       }
     );
 
-    const geoFenceNotify = new NodejsFunction(this, 'geoFenceNotify', {
+    const geoFenceNotify = new lambda.Function(this, 'geoFenceNotify', {
       runtime: lambda.Runtime.NODEJS_LATEST,
-      entry: 'lambda/geoFenceNotifyhandler.js',
-      handler: 'sendNotificationHandler',
+      handler: "gpsMultiUnitHandler",
+      code: lambda.Code.fromAsset(path.join(__dirname, '/lambda/geoFenceNotifyhandler')),
       timeout: cdk.Duration.seconds(30),
       tracing: lambda.Tracing.ACTIVE,
       description: 'Amazon Location Service GeoFence Notify for LINE',
