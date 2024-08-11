@@ -88,8 +88,8 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       "BatchUpdateDevicePositionFromGpsMultiUnitBeam",
       {
         runtime: lambda.Runtime.NODEJS_LATEST,
-        handler: "gpsMultiUnitHandler",
-        code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/updateDevicePositionBeamHandler')),
+        handler: "updateDevicePositionBeamHandler.gpsMulchUnitHandler",
+        code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/')),
         timeout: cdk.Duration.seconds(30),
         tracing: lambda.Tracing.ACTIVE,
         description:
@@ -150,8 +150,8 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
 
     const geoFenceNotify = new lambda.Function(this, 'geoFenceNotify', {
       runtime: lambda.Runtime.NODEJS_LATEST,
-      handler: "sendNotificationHandler",
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/geoFenceNotifyhandler')),
+      handler: "geoFenceNotifyhandler.sendNotificationHandler",
+      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/')),
       timeout: cdk.Duration.seconds(30),
       tracing: lambda.Tracing.ACTIVE,
       description: 'Amazon Location Service GeoFence Notify for LINE',
