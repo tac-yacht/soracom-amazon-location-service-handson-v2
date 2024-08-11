@@ -87,7 +87,7 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       "BatchUpdateDevicePositionFromGpsMultiUnitBeam",
       {
         runtime: lambda.Runtime.NODEJS_LATEST,
-        entry: "lambda/updateDevicePositionBeamHandler.ts",
+        entry: "lambda/updateDevicePositionBeamHandler.js",
         handler: "gpsMultiUnitHandler",
         timeout: cdk.Duration.seconds(30),
         tracing: lambda.Tracing.ACTIVE,
