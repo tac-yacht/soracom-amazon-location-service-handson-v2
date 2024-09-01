@@ -5,7 +5,6 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as sqs from "aws-cdk-lib/aws-sqs";
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
-import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
 const path = require('node:path'); 
 
@@ -17,7 +16,9 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
     const soracomAccountId = '762707677580'; // Japan coverage
     // const soracomAccountId = '950858143650'; // Global coverage
     const externalId = 'soracomug'; // You'll need a longer value for practical use.
-    const lineNotifyToken = 'YOUR LINE_NOTIFY_TOKEN'
+    const lineNotifyToken = 'YOUR LINE NOTIFY TOKEN'
+    const deviceId = 'Enter a device ID for you. Upper and lower case letters, numbers, hyphens, underscores, and dots are allowed, up to 100 characters.'
+    
     /**
      * Amazon Location Service
      */
@@ -82,13 +83,13 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
     /**
      * AWS Lambda
      */
-    // Put Device Postion From SORACOM GPS Multi Unit For SORACOM Beam
-    const batchUpdateDevicePositionFromGpsMultiUnitBeam = new lambda.Function(
+    // Put Device Postion From SORACOM GPS Multi Unit For SORACOM Funk
+    const batchUpdateDevicePositionFromGpsMultiUnitForFunk = new lambda.Function(
       this,
-      "BatchUpdateDevicePositionFromGpsMultiUnitBeam",
+      "BatchUpdateDevicePositionFromGpsMultiUnitForFunk",
       {
         runtime: lambda.Runtime.NODEJS_LATEST,
-        handler: "updateDevicePositionBeamHandler.gpsMulchUnitHandler",
+        handler: "updateDevicePositionHandler.gpsMulchUnitHandler",
         code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/')),
         timeout: cdk.Duration.seconds(30),
         tracing: lambda.Tracing.ACTIVE,
@@ -97,55 +98,13 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
         environment: {
           AMAZON_LOCATION_SERVICE_TRACKER_NAME:
             amazonLocationServiceHandsonTracker.trackerName,
+            DEVICE_ID: deviceId
         },
       }
     );
 
-    batchUpdateDevicePositionFromGpsMultiUnitBeam.addToRolePolicy(
+    batchUpdateDevicePositionFromGpsMultiUnitForFunk.addToRolePolicy(
       batchUpdateDevicePositionPolicyStatement
-    );
-    const batchUpdateDevicePositionFromGpsMultiUnitBeamUrl =
-      new lambda.FunctionUrl(
-        this,
-        "BatchUpdateDevicePositionFromGpsMultiUnitBeamUrl",
-        {
-          function: batchUpdateDevicePositionFromGpsMultiUnitBeam,
-          authType: lambda.FunctionUrlAuthType.AWS_IAM
-        }
-      );
-    new cdk.CfnOutput(
-      this,
-      "TheBatchUpdateDevicePositionFromGpsMultiUnitBeamUrl",
-      {
-        value: batchUpdateDevicePositionFromGpsMultiUnitBeamUrl.url,
-      }
-    );
-    // IAM Role
-    const lambdaFunctionUrlsInvokeIamPolicy = new iam.PolicyStatement(
-      {
-        effect: iam.Effect.ALLOW,
-        resources:[
-          batchUpdateDevicePositionFromGpsMultiUnitBeamUrl.functionArn
-        ],
-        actions: ["lambda:InvokeFunctionUrl"]
-      }
-    );
-    const lambdaFunctionUrlsInvokePrincipal = new iam.AccountPrincipal(
-      soracomAccountId
-    );
-    const lambdaFunctionUrlsInvokeIamRole = new iam.Role(this, 'LambdaFunctionUrlsInvokeRole',
-       {
-        assumedBy :lambdaFunctionUrlsInvokePrincipal,
-        externalIds : [externalId],
-       }
-    );
-    lambdaFunctionUrlsInvokeIamRole.addToPolicy(lambdaFunctionUrlsInvokeIamPolicy);
-    new cdk.CfnOutput(
-      this,
-      "LambdaFunctionUrlsInvokeIamRoleArn",
-      {
-        value: lambdaFunctionUrlsInvokeIamRole.roleArn,
-      }
     );
 
     const geoFenceNotify = new lambda.Function(this, 'geoFenceNotify', {
@@ -159,12 +118,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
         LINE_NOTIFY_TOKEN: lineNotifyToken,
       },
     });
-    const geoFenceNotifyPolicyStatement = new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      resources: ['*'],
-      actions: ['ssm:GetParameter', 'ssm:GetParameters', 'kms:Decrypt'],
-    });
-    geoFenceNotify.addToRolePolicy(geoFenceNotifyPolicyStatement);
 
     /**
      * SQS DLQ
@@ -194,6 +147,50 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
         maxEventAge: cdk.Duration.hours(2),
         retryAttempts: 2,
       })
+    );
+    /**
+     * AWS IAM Authentication Information for SORACOM 
+     */
+    const iamAuthenticationInformationForSoracomPolicy = new iam.PolicyStatement(
+      {
+        effect: iam.Effect.ALLOW,
+        resources:[
+          batchUpdateDevicePositionFromGpsMultiUnitForFunk.functionArn
+        ],
+        actions: ["lambda:InvokeFunction"]
+      }
+    );
+    const iamAuthenticationInformationForSoracomPrincipal = new iam.AccountPrincipal(
+      soracomAccountId
+    );
+    const iamAuthenticationInformationForSoracomRole = new iam.Role(this, 'IamAuthenticationInformationForSoracomRole',
+       {
+        assumedBy :iamAuthenticationInformationForSoracomPrincipal,
+        externalIds : [externalId],
+       }
+    );
+    iamAuthenticationInformationForSoracomRole.addToPolicy(iamAuthenticationInformationForSoracomPolicy);
+    // Output
+    new cdk.CfnOutput(
+      this,
+      "OutputIamAuthenticationInformationForSoracomRoleRoleArn",
+      {
+        value: iamAuthenticationInformationForSoracomRole.roleArn,
+      }
+    );
+    new cdk.CfnOutput(
+      this,
+      "OutputBatchUpdateDevicePositionFromGpsMultiUnitForFunkFunctionName",
+      {
+        value: batchUpdateDevicePositionFromGpsMultiUnitForFunk.functionName
+      }
+    );
+    new cdk.CfnOutput(
+      this,
+      "OutputAmazonLocationServiceHandsonTrackerTrackerName",
+      {
+        value: amazonLocationServiceHandsonTracker.trackerName
+      }
     );
   }
 }
