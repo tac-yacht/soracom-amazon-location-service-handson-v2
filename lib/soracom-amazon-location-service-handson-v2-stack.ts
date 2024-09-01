@@ -35,7 +35,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       "AmazonLocationServiceHandsonTracker",
       {
         trackerName: "AmazonLocationServiceHandsonTracker",
-        pricingPlan: "RequestBasedUsage",
         description: "Tracker For Amazon Location Service Handson",
       }
     );
@@ -65,7 +64,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       "AmazonLocationServiceHandsonGeoFence",
       {
         collectionName: "AmazonLocationServiceHandsonGeoFence",
-        pricingPlan: "RequestBasedUsage",
         description: "GeoFence For Amazon Location Service Handson",
       }
     );
