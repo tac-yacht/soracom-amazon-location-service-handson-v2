@@ -122,14 +122,14 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
      */
     const geoFenceEventsDlq = new sqs.Queue(
       this,
-      'necklaceOfArtemisSystemGeoFenceEventDlq'
+      'amazonLocationServiceGeoFenceEventDlq'
     );
     /**
      * EventBridge Events
      */
     const geoFenceEventsRule = new events.Rule(
       this,
-      'necklaceOfArtemisSystemGeoFenceEventRule',
+      'amazonLocationServiceGeoFenceEventRule',
       {
         description: 'SORACOM Handson Geofence EventRule',
         eventPattern: {
