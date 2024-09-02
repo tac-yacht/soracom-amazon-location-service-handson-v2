@@ -33,7 +33,7 @@ async function putDevicePostion(lon, lat, deviceId) {
     return false;
   }
 }
-exports.gpsMulchUnitHandler = async function (event, context) {
+export const gpsMulchUnitHandler = async function (event, context) {
   console.log('event:', JSON.stringify(event, null, 2));
   console.log('context:', JSON.stringify(context, null, 2));
   /**
