@@ -1,7 +1,7 @@
 
 
 import * as qs from 'querystring';
-import * as https from "https";
+const REQUEST_TIMEOUT_MS = 5000;
 const lineNotifyToken = process.env.LINE_NOTIFY_TOKEN;
 
 export const sendNotificationHandler = async function (event, context) {
