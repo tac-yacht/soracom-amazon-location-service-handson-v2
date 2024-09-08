@@ -185,9 +185,9 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
     );
     new cdk.CfnOutput(
       this,
-      "OutputBatchUpdateDevicePositionFromGpsMultiUnitForFunkFunctionName",
+      "OutputBatchUpdateDevicePositionFromGpsMultiUnitForFunkFunctionArn",
       {
-        value: batchUpdateDevicePositionFromGpsMultiUnitForFunk.functionName
+        value: batchUpdateDevicePositionFromGpsMultiUnitForFunk.functionArn
       }
     );
     new cdk.CfnOutput(

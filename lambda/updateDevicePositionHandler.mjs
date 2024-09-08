@@ -37,11 +37,10 @@ export const gpsMulchUnitHandler = async function (event, context) {
   console.log('event:', JSON.stringify(event, null, 2));
   console.log('context:', JSON.stringify(context, null, 2));
   /**
-   * bodyから緯度・経度を取得
+   * eventから緯度・経度を取得
    */
-  const bodyJson = JSON.parse(event.body);
-  const lat = bodyJson.lat;
-  const lon = bodyJson.lon;
+  const lat = event.lat;
+  const lon = event.lon;
   // DeviceId は環境変数から取得
   const deviceId = String(process.env.DEVICE_ID);
   const result = await putDevicePostion(lon, lat, deviceId);
