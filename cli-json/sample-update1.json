@@ -3,8 +3,8 @@
   "Updates": [
     {
       "DeviceId": "sampleDevice001",
-      "SampleTime": "2024-09-08T09:45:00.000Z",
-      "Position": [141.13820, 39.800087]
+      "SampleTime": "2024-09-13T05:00:00.000Z",
+      "Position": [141.138207, 39.800087]
     }
   ]
 }
