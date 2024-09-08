@@ -92,7 +92,7 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
         timeout: cdk.Duration.seconds(30),
         tracing: lambda.Tracing.ACTIVE,
         description:
-          "Amazon Location Service Update Device Position. From SORACOM GPS Mutil Unit Use SORACOM Beam",
+          "Amazon Location Service Update Device Position. From SORACOM GPS Mutil Unit Use SORACOM Funk",
         environment: {
           AMAZON_LOCATION_SERVICE_TRACKER_NAME:
             amazonLocationServiceHandsonTracker.trackerName,
