@@ -67,7 +67,14 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
         description: "GeoFence For Amazon Location Service Handson",
       }
     );
-
+    new geo.CfnTrackerConsumer(
+      this,
+      'AmazonLocationServiceHandsonGeoFenceTrackerConsumer',
+      {
+        consumerArn: amazonLocationServiceHandsonGeoFence.attrCollectionArn,
+        trackerName: amazonLocationServiceHandsonTracker.trackerName,
+      }
+    );
     /**
      * AWS IAM
      */
