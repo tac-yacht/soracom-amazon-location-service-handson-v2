@@ -1,0 +1,10 @@
+{
+  "TrackerName": "AmazonLocationServiceHandsonTracker",
+  "Updates": [
+    {
+      "DeviceId": "sampleDevice001",
+      "SampleTime": "2024-09-08T09:45:00.000Z",
+      "Position": [39.80008744212253, 141.13820791138284]
+    }
+  ]
+}
