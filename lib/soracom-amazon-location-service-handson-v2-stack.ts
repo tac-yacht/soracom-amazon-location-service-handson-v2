@@ -112,7 +112,7 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       batchUpdateDevicePositionPolicyStatement
     );
 
-    const geoFenceNotify = new lambda.Function(this, 'geoFenceNotify', {
+    const geoFenceNotify = new lambda.Function(this, 'GeoFenceNotify', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: "geoFenceNotifyhandler.sendNotificationHandler",
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/')),
