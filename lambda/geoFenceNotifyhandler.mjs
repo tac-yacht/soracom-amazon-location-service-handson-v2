@@ -39,9 +39,9 @@ async function createMessage(eventDetail) {
   const eventType = eventDetail.EventType;
   let eventName = '';
   if (eventType == 'ENTER') {
-    eventName = 'に間もなく到着します';
+    eventName = 'に入りました';
   } else {
-    eventName = 'から出発しました。';
+    eventName = 'から出ました。';
   }
   return `DeviceId: ${eventDetail.DeviceId}がGeoFence: ${eventDetail.GeofenceId}${eventName} 位置: https://www.google.com/maps?q=${eventDetail.Position[1]},${eventDetail.Position[0]}`;
 }
