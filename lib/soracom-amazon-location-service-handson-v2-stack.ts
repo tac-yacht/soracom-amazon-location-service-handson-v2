@@ -19,7 +19,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
     // const soracomAccountId = '950858143650'; // Global coverage
     const externalId = 'soracomug'; // You'll need a longer value for practical use.
     const notifyReceivedEmail = 'YOUR_EMAIL_ADDRESS@example.jp'
-    const lineNotifyToken = 'YOUR LINE NOTIFY TOKEN'
     const deviceId = 'Enter a device ID for you. Upper and lower case letters, numbers, hyphens, underscores, and dots are allowed, up to 100 characters.'
     
     /**
@@ -115,18 +114,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       batchUpdateDevicePositionPolicyStatement
     );
 
-    const geoFenceNotify = new lambda.Function(this, 'GeoFenceNotify', {
-      runtime: lambda.Runtime.NODEJS_20_X,
-      handler: "geoFenceNotifyhandler.sendNotificationHandler",
-      code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/')),
-      timeout: cdk.Duration.seconds(30),
-      tracing: lambda.Tracing.ACTIVE,
-      description: 'Amazon Location Service GeoFence Notify for LINE',
-      environment: {
-        LINE_NOTIFY_TOKEN: lineNotifyToken,
-      },
-    });
-
     /**
      * SNS
      */
@@ -136,13 +123,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
     });
     getFanceEventsTopic.addSubscription(new subscriptions.EmailSubscription(notifyReceivedEmail));
 
-    /**
-     * SQS DLQ
-     */
-    const geoFenceEventsDlq = new sqs.Queue(
-      this,
-      'amazonLocationServiceGeoFenceEventDlq'
-    );
     /**
      * EventBridge Events
      */
@@ -159,15 +139,6 @@ export class SoracomAmazonLocationServiceHandsonV2Stack extends cdk.Stack {
       }
     );
 
-/*    
-    geoFenceEventsRule.addTarget(
-      new targets.LambdaFunction(geoFenceNotify, {
-        deadLetterQueue: geoFenceEventsDlq,
-        maxEventAge: cdk.Duration.hours(2),
-        retryAttempts: 2,
-      })
-    );
-*/
     geoFenceEventsRule.addTarget(new targets.SnsTopic(getFanceEventsTopic, {
       message: events.RuleTargetInput.fromMultilineText(
 `デバイスがジオフェンスを入退出しました
